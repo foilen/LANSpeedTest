@@ -3,7 +3,7 @@ allprojects {
     apply plugin: 'application'
 
     group = 'com.foilen'
-    
+
     buildscript {
         repositories {
             mavenLocal()
@@ -15,12 +15,14 @@ allprojects {
 subprojects {
 
     apply plugin: 'java'
-    
+
     sourceCompatibility = '1.7'
     targetCompatibility = '1.7'
-    
+
     repositories {
         mavenLocal()
         jcenter()
     }
 }
+
+task wrapper(type: Wrapper) { gradleVersion = '3.2.1' }
