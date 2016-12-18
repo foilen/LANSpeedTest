@@ -1,5 +1,9 @@
+plugins {
+  id 'com.github.johnrengelman.shadow' version '1.2.4'
+}
+
 version = 1.0
-mainClassName = 'ca.pgon.linkvalidator.App'
+mainClassName = 'com.foilen.lanspeedtest.App'
 
 dependencies {
     compile "com.foilen:jl-incubator:0.8.3"
