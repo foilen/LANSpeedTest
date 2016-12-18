@@ -1,0 +1,15 @@
+# Eclipse
+bin/
+.settings/
+.classpath
+.project
+
+# Gradle
+.gradle/
+build/
+
+# IntelliJ IDEA
+local.properties
+.idea
+.DS_Store
+*.iml
