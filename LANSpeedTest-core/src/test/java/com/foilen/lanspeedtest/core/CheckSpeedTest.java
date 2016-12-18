@@ -14,10 +14,12 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package com.foilen.lanspeedtest;
+package com.foilen.lanspeedtest.core;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.foilen.lanspeedtest.core.CheckSpeed;
 
 public class CheckSpeedTest {
 

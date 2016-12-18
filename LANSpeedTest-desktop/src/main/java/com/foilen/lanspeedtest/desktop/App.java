@@ -14,9 +14,12 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package com.foilen.lanspeedtest;
+package com.foilen.lanspeedtest.desktop;
 
 import java.io.IOException;
+
+import com.foilen.lanspeedtest.core.SpeedClient;
+import com.foilen.lanspeedtest.core.SpeedServer;
 
 public class App {
 
