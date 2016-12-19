@@ -14,13 +14,23 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package com.foilen.lanspeedtest.core;
+package com.foilen.lanspeedtest.desktop.cli;
 
-public class SpeedTestDiscoveryContants {
+import com.foilen.lanspeedtest.core.SpeedTestCore;
 
-    public static final int DISCOVERY_PORT = 9999;
-    public static final String APP_NAME = "LAN Speed Test";
-    public static final String APP_VERSION = "1.0";
-    public static final String SERVICE_NAME = "Speed";
+public class ServerCli implements Runnable {
+
+    private SpeedTestCore speedTestCore;
+
+    public ServerCli(SpeedTestCore speedTestCore) {
+        this.speedTestCore = speedTestCore;
+    }
+
+    @Override
+    public void run() {
+
+        speedTestCore.startServer();
+
+    }
 
 }

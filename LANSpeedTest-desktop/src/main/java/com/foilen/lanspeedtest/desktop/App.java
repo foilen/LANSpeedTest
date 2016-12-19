@@ -18,8 +18,9 @@ package com.foilen.lanspeedtest.desktop;
 
 import java.io.IOException;
 
-import com.foilen.lanspeedtest.core.SpeedClient;
-import com.foilen.lanspeedtest.core.SpeedServer;
+import com.foilen.lanspeedtest.core.SpeedTestCore;
+import com.foilen.lanspeedtest.desktop.cli.ClientCli;
+import com.foilen.lanspeedtest.desktop.cli.ServerCli;
 
 public class App {
 
@@ -35,12 +36,14 @@ public class App {
             return;
         }
 
+        SpeedTestCore speedTestCore = new SpeedTestCore();
+
         switch (args[0]) {
         case "--client":
-            new SpeedClient().start();
+            new ClientCli(speedTestCore).run();
             break;
         case "--server":
-            new SpeedServer().start();
+            new ServerCli(speedTestCore).run();
             break;
 
         default:

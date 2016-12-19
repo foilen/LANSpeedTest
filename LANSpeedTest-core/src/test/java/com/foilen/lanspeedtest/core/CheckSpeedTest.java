@@ -19,8 +19,6 @@ package com.foilen.lanspeedtest.core;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.foilen.lanspeedtest.core.CheckSpeed;
-
 public class CheckSpeedTest {
 
     @Test
