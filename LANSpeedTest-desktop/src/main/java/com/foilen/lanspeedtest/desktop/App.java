@@ -21,22 +21,32 @@ import java.io.IOException;
 import com.foilen.lanspeedtest.core.SpeedTestCore;
 import com.foilen.lanspeedtest.desktop.cli.ClientCli;
 import com.foilen.lanspeedtest.desktop.cli.ServerCli;
+import com.foilen.lanspeedtest.desktop.swing.PrincipalGui;
 
 public class App {
 
-    private static void displayModeAndExit() {
-        System.out.println("You need to specify --client or --server");
+    private static void displayHelpAndExit() {
+        System.out.println("Running with no arguments launches a Swing GUI");
+        System.out.println("Using --server starts a server that waits for tests in a console");
+        System.out.println("Using --client tests all the available servers, displays them in the console");
+        System.out.println("Using --help or -h shows this help");
         System.exit(1);
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        if (args.length != 1) {
-            displayModeAndExit();
+        SpeedTestCore speedTestCore = new SpeedTestCore();
+
+        // Launch GUI
+        if (args.length == 0) {
+            new PrincipalGui(speedTestCore).setVisible(true);
             return;
         }
 
-        SpeedTestCore speedTestCore = new SpeedTestCore();
+        if (args.length != 1) {
+            displayHelpAndExit();
+            return;
+        }
 
         switch (args[0]) {
         case "--client":
@@ -47,7 +57,7 @@ public class App {
             break;
 
         default:
-            displayModeAndExit();
+            displayHelpAndExit();
             break;
         }
 

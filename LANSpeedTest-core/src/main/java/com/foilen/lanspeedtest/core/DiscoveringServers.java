@@ -48,7 +48,10 @@ public class DiscoveringServers extends Thread {
 
         logger.info("Waiting for new servers");
 
-        LocalBroadcastDiscoveryClient discoveryClient = new LocalBroadcastDiscoveryClient(SpeedTestDiscoveryContants.DISCOVERY_PORT);
+        LocalBroadcastDiscoveryClient discoveryClient = new LocalBroadcastDiscoveryClient( //
+                SpeedTestDiscoveryContants.DISCOVERY_PORT, //
+                SpeedTestDiscoveryContants.APP_NAME, //
+                SpeedTestDiscoveryContants.APP_VERSION);
 
         for (;;) {
             ThreadTools.sleep(5000);

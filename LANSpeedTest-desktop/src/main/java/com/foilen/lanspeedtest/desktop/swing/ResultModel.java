@@ -14,9 +14,11 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package com.foilen.lanspeedtest.core.events;
+package com.foilen.lanspeedtest.desktop.swing;
 
-public class TestCompleteEvent {
+import com.foilen.lanspeedtest.core.events.ServerFoundEvent;
+
+public class ResultModel {
 
     private String name;
     private String host;
@@ -25,13 +27,17 @@ public class TestCompleteEvent {
     private Double uploadSpeedMbps;
     private String comment;
 
-    public TestCompleteEvent(String name, String host, int port, Double downloadSpeedMbps, Double uploadSpeedMbps, String comment) {
-        this.name = name;
-        this.host = host;
-        this.port = port;
-        this.downloadSpeedMbps = downloadSpeedMbps;
-        this.uploadSpeedMbps = uploadSpeedMbps;
-        this.comment = comment;
+    private boolean active;
+    private boolean pendingMesure;
+
+    public ResultModel() {
+    }
+
+    public ResultModel(ServerFoundEvent event) {
+        name = event.getName();
+        host = event.getHost();
+        port = event.getPort();
+        active = true;
     }
 
     public String getComment() {
@@ -58,6 +64,18 @@ public class TestCompleteEvent {
         return uploadSpeedMbps;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public boolean isPendingMesure() {
+        return pendingMesure;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     public void setComment(String comment) {
         this.comment = comment;
     }
@@ -74,6 +92,10 @@ public class TestCompleteEvent {
         this.name = name;
     }
 
+    public void setPendingMesure(boolean pendingMesure) {
+        this.pendingMesure = pendingMesure;
+    }
+
     public void setPort(int port) {
         this.port = port;
     }
@@ -85,7 +107,7 @@ public class TestCompleteEvent {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("TestCompleteEvent [name=");
+        builder.append("ResultModel [name=");
         builder.append(name);
         builder.append(", host=");
         builder.append(host);
@@ -95,8 +117,8 @@ public class TestCompleteEvent {
         builder.append(downloadSpeedMbps);
         builder.append(", uploadSpeedMbps=");
         builder.append(uploadSpeedMbps);
-        builder.append(", comment=");
-        builder.append(comment);
+        builder.append(", active=");
+        builder.append(active);
         builder.append("]");
         return builder.toString();
     }

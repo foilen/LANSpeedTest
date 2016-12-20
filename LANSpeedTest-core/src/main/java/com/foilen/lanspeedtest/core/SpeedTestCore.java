@@ -17,6 +17,8 @@
 package com.foilen.lanspeedtest.core;
 
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +39,11 @@ public class SpeedTestCore {
     private DiscoveringServers discoveringServers;
     private SpeedServer speedServer;
 
+    // Execution queue
+    private ExecutorService testExecutorService = Executors.newSingleThreadScheduledExecutor();
+
     /**
-     * Execute the test and send events. This is a synchrone call.
+     * Queue the execution of the test, execute the test and send events. This is an async call.
      *
      * @param name
      *            the name
@@ -47,27 +52,30 @@ public class SpeedTestCore {
      * @param port
      *            the port
      */
-    public void executeTest(String name, String host, int port) {
+    public void queueExecuteTest(String name, String host, int port) {
 
-        sendEvent(new TestBeginEvent(name, host, port));
+        testExecutorService.execute(() -> {
 
-        Socket socket = null;
+            sendEvent(new TestBeginEvent(name, host, port));
 
-        try {
-            socket = new Socket(host, port);
-            logger.debug("Calculating download speed for {} / {}", name, host);
-            double downloadSpeedMbps = CheckSpeed.download(socket);
-            logger.debug("Calculating upload speed for {} / {}", name, host);
-            double uploadSpeedMbps = CheckSpeed.upload(socket);
+            Socket socket = null;
 
-            sendEvent(new TestCompleteEvent(name, host, port, downloadSpeedMbps, uploadSpeedMbps));
-        } catch (Exception e) {
-            logger.error("Failed to test {} / {}", name, host, e);
-            sendEvent(new TestCompleteEvent(name, host, port, 0, 0));
-        } finally {
-            CloseableTools.close(socket);
-        }
+            try {
+                socket = new Socket(host, port);
+                logger.debug("Calculating download speed for {} / {}", name, host);
+                double downloadSpeedMbps = CheckSpeed.download(socket);
+                logger.debug("Calculating upload speed for {} / {}", name, host);
+                double uploadSpeedMbps = CheckSpeed.upload(socket);
 
+                sendEvent(new TestCompleteEvent(name, host, port, downloadSpeedMbps, uploadSpeedMbps, null));
+            } catch (Exception e) {
+                logger.error("Failed to test {} / {}", name, host, e);
+                sendEvent(new TestCompleteEvent(name, host, port, null, null, e.getMessage()));
+            } finally {
+                CloseableTools.close(socket);
+            }
+
+        });
     }
 
     /**
@@ -89,6 +97,13 @@ public class SpeedTestCore {
     public void sendEvent(Object event) {
         logger.debug("Dispatching event: {}", event);
         eventBus.post(event);
+    }
+
+    /**
+     * When you want to end the program, that stops the threads that are not daemons.
+     */
+    public void shutdown() {
+        testExecutorService.shutdown();
     }
 
     /**

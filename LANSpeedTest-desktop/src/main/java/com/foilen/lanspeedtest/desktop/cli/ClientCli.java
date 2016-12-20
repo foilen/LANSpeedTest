@@ -16,8 +16,6 @@
  */
 package com.foilen.lanspeedtest.desktop.cli;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -32,7 +30,6 @@ public class ClientCli implements Runnable {
 
     private SpeedTestCore speedTestCore;
 
-    private ExecutorService testExecutorService = Executors.newSingleThreadScheduledExecutor();
     private AtomicBoolean oneRan = new AtomicBoolean();
     private AtomicInteger leftToExecute = new AtomicInteger();
 
@@ -43,12 +40,9 @@ public class ClientCli implements Runnable {
     @Subscribe
     public void newServerToTest(ServerFoundEvent event) {
 
+        oneRan.set(true);
         leftToExecute.incrementAndGet();
-        testExecutorService.execute(() -> {
-            oneRan.set(true);
-            speedTestCore.executeTest(event.getName(), event.getHost(), event.getPort());
-            leftToExecute.decrementAndGet();
-        });
+        speedTestCore.queueExecuteTest(event.getName(), event.getHost(), event.getPort());
 
     }
 
@@ -62,7 +56,7 @@ public class ClientCli implements Runnable {
         }
 
         System.out.println("All services were tested");
-        testExecutorService.shutdown();
+        speedTestCore.shutdown();
     }
 
     @Subscribe
@@ -72,6 +66,7 @@ public class ClientCli implements Runnable {
 
     @Subscribe
     public void testComplete(TestCompleteEvent event) {
+        leftToExecute.decrementAndGet();
         System.out.println("\tResults for " //
                 + event.getName() + " (" + event.getHost() + ") " //
                 + event.getDownloadSpeedMbps() + " / " + event.getUploadSpeedMbps() + " mbps | " //

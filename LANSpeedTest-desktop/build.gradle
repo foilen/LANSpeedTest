@@ -8,6 +8,9 @@ mainClassName = 'com.foilen.lanspeedtest.desktop.App'
 
 dependencies {
     compile project(':LANSpeedTest-core')
+    
+    compile group: 'com.miglayout', name: 'miglayout-swing', version: '5.0'
+    
 
     testCompile 'junit:junit:4.11'
 }
