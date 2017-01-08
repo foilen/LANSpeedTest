@@ -49,14 +49,14 @@ public class DiscoveringServers extends Thread {
         logger.info("Waiting for new servers");
 
         LocalBroadcastDiscoveryClient discoveryClient = new LocalBroadcastDiscoveryClient( //
-                SpeedTestDiscoveryContants.DISCOVERY_PORT, //
-                SpeedTestDiscoveryContants.APP_NAME, //
-                SpeedTestDiscoveryContants.APP_VERSION);
+                SpeedTestContants.DISCOVERY_PORT, //
+                SpeedTestContants.APP_NAME, //
+                SpeedTestContants.APP_VERSION);
 
         for (;;) {
             ThreadTools.sleep(5000);
 
-            List<DiscoverableService> services = discoveryClient.retrieveServicesList(SpeedTestDiscoveryContants.SERVICE_NAME);
+            List<DiscoverableService> services = discoveryClient.retrieveServicesList(SpeedTestContants.SERVICE_NAME);
             logger.debug("Found {} services", services.size());
 
             List<ServerFoundEvent> currentFounds = services.stream() //

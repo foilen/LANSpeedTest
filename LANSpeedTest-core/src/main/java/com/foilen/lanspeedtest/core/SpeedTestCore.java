@@ -64,6 +64,8 @@ public class SpeedTestCore {
                 socket = new Socket(host, port);
                 logger.debug("Calculating download speed for {} / {}", name, host);
                 double downloadSpeedMbps = CheckSpeed.download(socket);
+
+                socket = new Socket(host, port);
                 logger.debug("Calculating upload speed for {} / {}", name, host);
                 double uploadSpeedMbps = CheckSpeed.upload(socket);
 

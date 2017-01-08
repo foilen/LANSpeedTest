@@ -18,6 +18,7 @@ package com.foilen.lanspeedtest.core;
 
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ import com.foilen.smalltools.net.discovery.LocalBroadcastDiscoveryServer;
 import com.foilen.smalltools.net.services.ExecutorWrappedSocketCallback;
 import com.foilen.smalltools.net.services.SocketCallback;
 import com.foilen.smalltools.tools.CloseableTools;
+import com.foilen.smalltools.tools.StreamsTools;
 
 public class SpeedServer extends Thread implements SocketCallback {
 
@@ -39,11 +41,28 @@ public class SpeedServer extends Thread implements SocketCallback {
         logger.info("Client {} connected", remoteName);
 
         try {
-            CheckSpeed.upload(socket);
-            CheckSpeed.download(socket);
+            byte[] buffer = new byte[CheckSpeed.BUFFER_SIZE];
+
+            // Get mode and execute it
+            int mode = StreamsTools.readInt(socket.getInputStream());
+            switch (mode) {
+            case SpeedTestContants.SERVER_SEND_DATA:
+                logger.info("Client {} sending it data", remoteName);
+                Arrays.fill(buffer, (byte) 0);
+                for (;;) {
+                    socket.getOutputStream().write(buffer);
+                }
+            case SpeedTestContants.SERVER_RECEIVE_DATA:
+                logger.info("Client {} receiving data from it", remoteName);
+                for (;;) {
+                    socket.getInputStream().read(buffer);
+                }
+            }
         } catch (Exception e) {
-            logger.error("Problem with client {}", remoteName, e);
+            // Simply disconnecting
         }
+
+        logger.info("Client {} disconnected", remoteName);
 
         CloseableTools.close(socket);
     }
@@ -53,10 +72,10 @@ public class SpeedServer extends Thread implements SocketCallback {
         logger.info("Starting server");
 
         // Create a service
-        LocalBroadcastDiscoveryServer discoveryServer = new LocalBroadcastDiscoveryServer(SpeedTestDiscoveryContants.DISCOVERY_PORT);
-        DiscoverableService discoverableService = new DiscoverableService(SpeedTestDiscoveryContants.APP_NAME, //
-                SpeedTestDiscoveryContants.APP_VERSION, //
-                SpeedTestDiscoveryContants.SERVICE_NAME, //
+        LocalBroadcastDiscoveryServer discoveryServer = new LocalBroadcastDiscoveryServer(SpeedTestContants.DISCOVERY_PORT);
+        DiscoverableService discoverableService = new DiscoverableService(SpeedTestContants.APP_NAME, //
+                SpeedTestContants.APP_VERSION, //
+                SpeedTestContants.SERVICE_NAME, //
                 JavaEnvironmentValues.getHostName());
         discoveryServer.addTcpBroadcastService(discoverableService, new ExecutorWrappedSocketCallback(this));
 

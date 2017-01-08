@@ -16,11 +16,16 @@
  */
 package com.foilen.lanspeedtest.core;
 
-public class SpeedTestDiscoveryContants {
+public class SpeedTestContants {
 
+    // Discovery
     public static final int DISCOVERY_PORT = 9999;
     public static final String APP_NAME = "LAN Speed Test";
-    public static final String APP_VERSION = "1";
+    public static final String APP_VERSION = "2";
     public static final String SERVICE_NAME = "Speed";
+
+    // Protocol
+    public static final int SERVER_SEND_DATA = 0;
+    public static final int SERVER_RECEIVE_DATA = 1;
 
 }

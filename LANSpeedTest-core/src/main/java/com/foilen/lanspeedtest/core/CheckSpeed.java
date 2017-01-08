@@ -17,43 +17,49 @@
 package com.foilen.lanspeedtest.core;
 
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 
 import com.foilen.smalltools.exception.SmallToolsException;
-import com.foilen.smalltools.tools.AssertTools;
+import com.foilen.smalltools.tools.DateTools;
 import com.foilen.smalltools.tools.StreamsTools;
 
 public class CheckSpeed {
 
-    private static final int BUFFER_SIZE = 1000; // 1kB
-    private static final int LOOP_COUNT = 200 * 1000 * 1000 / BUFFER_SIZE; // 200 mB in total
+    public static final int BUFFER_SIZE = 1000; // 1kB
     private static final byte[] BUFFER;
 
     static {
         BUFFER = new byte[BUFFER_SIZE];
     }
 
-    protected static double calculateSpeed(long startTime, long endTime) {
+    protected static double calculateSpeedInMb(long startTime, long endTime, long amountOfBytes) {
         double seconds = ((endTime - startTime) / 1000.0);
-        double mbBySec = LOOP_COUNT * (BUFFER_SIZE + 4); // Total in B with headers
-        mbBySec /= 1000 * 1000;// Total got in mB
-        mbBySec *= 8;// Total got in mb
-        return mbBySec / seconds;
+        double mBytesTransfered = amountOfBytes / 1000000;
+        return mBytesTransfered / seconds * 8;
     }
 
     public static double download(Socket socket) {
 
         try {
 
-            long startTime = new Date().getTime();
+            // Send the mode
+            StreamsTools.write(socket.getOutputStream(), SpeedTestContants.SERVER_SEND_DATA);
 
-            for (int i = 0; i < LOOP_COUNT; ++i) {
-                byte[] bytes = StreamsTools.readBytes(socket.getInputStream());
-                AssertTools.assertTrue(bytes.length == BUFFER_SIZE, "Buffer size is not of the right size. Expected " + BUFFER_SIZE + " actual " + bytes.length);
+            // Download for 5 seconds
+            Date now = new Date();
+            long startTime = now.getTime();
+            long maxTime = DateTools.addDate(now, Calendar.SECOND, 5).getTime();
+
+            long amountOfBytes = 0;
+            long endTime;
+            while ((endTime = new Date().getTime()) < maxTime) {
+                // Get some data
+                amountOfBytes += socket.getInputStream().read(BUFFER);
             }
 
-            long endTime = new Date().getTime();
-            return calculateSpeed(startTime, endTime);
+            return calculateSpeedInMb(startTime, endTime, amountOfBytes);
         } catch (Exception e) {
             throw new SmallToolsException("Problem reading the bytes", e);
         }
@@ -64,14 +70,24 @@ public class CheckSpeed {
 
         try {
 
-            long startTime = new Date().getTime();
+            // Send the mode
+            StreamsTools.write(socket.getOutputStream(), SpeedTestContants.SERVER_RECEIVE_DATA);
+            Arrays.fill(BUFFER, (byte) 0);
 
-            for (int i = 0; i < LOOP_COUNT; ++i) {
-                StreamsTools.write(socket.getOutputStream(), BUFFER);
+            // Upload for 5 seconds
+            Date now = new Date();
+            long startTime = now.getTime();
+            long maxTime = DateTools.addDate(now, Calendar.SECOND, 5).getTime();
+
+            long amountOfBytes = 0;
+            long endTime;
+            while ((endTime = new Date().getTime()) < maxTime) {
+                // Send some data
+                socket.getOutputStream().write(BUFFER);
+                amountOfBytes += BUFFER_SIZE;
             }
 
-            long endTime = new Date().getTime();
-            return calculateSpeed(startTime, endTime);
+            return calculateSpeedInMb(startTime, endTime, amountOfBytes);
         } catch (Exception e) {
             throw new SmallToolsException("Problem writing the bytes", e);
         }

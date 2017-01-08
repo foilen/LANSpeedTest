@@ -23,8 +23,12 @@ public class CheckSpeedTest {
 
     @Test
     public void testCalculateSpeed() {
-        Assert.assertEquals(1606.4, CheckSpeed.calculateSpeed(0, 1000), 0.1);
-        Assert.assertEquals(803.2, CheckSpeed.calculateSpeed(0, 2000), 0.1);
+
+        // 321 mBits
+        long amountOfBytes = 320 * 1000 * 1000;
+
+        Assert.assertEquals(2560, CheckSpeed.calculateSpeedInMb(0, 1000, amountOfBytes), 0.1);
+        Assert.assertEquals(1280, CheckSpeed.calculateSpeedInMb(0, 2000, amountOfBytes), 0.1);
     }
 
 }
