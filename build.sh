@@ -10,7 +10,7 @@ cd $RUN_PATH
 rm -rf apps
 mkdir apps
 
-./gradlew shadow
+./gradlew clean build assemble
 
 cp LANSpeedTest-desktop/build/libs/LANSpeedTest-desktop-*-all.jar apps
 

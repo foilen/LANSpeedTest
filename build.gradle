@@ -1,27 +1,51 @@
+buildscript {
+  repositories {
+    mavenLocal()
+    jcenter()
+  }
+}
+
 allprojects {
-    apply plugin: 'eclipse'
 
-    group = 'com.foilen'
+  apply plugin: 'eclipse'
 
-    buildscript {
-        repositories {
-            mavenLocal()
-            jcenter()
-        }
-    }
+  group = 'com.foilen'
+  version = System.getenv('VERSION')?:'master-SNAPSHOT'
+  
 }
 
 subprojects {
 
-    apply plugin: 'java'
+  apply plugin: 'java'
 
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
+  repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+  }
 
-    repositories {
-        mavenLocal()
-        jcenter()
+  sourceCompatibility = 11
+
+  eclipse {
+    classpath {
+      downloadSources = true
+      downloadJavadoc = true
     }
-}
+  }
 
-task wrapper(type: Wrapper) { gradleVersion = '3.2.1' }
+  task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+  }
+
+  task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+  }
+
+  artifacts {
+    archives sourcesJar
+    archives javadocJar
+  }
+
+}
