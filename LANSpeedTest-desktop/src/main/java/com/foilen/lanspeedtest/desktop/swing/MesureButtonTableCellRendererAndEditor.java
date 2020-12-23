@@ -37,10 +37,6 @@ public class MesureButtonTableCellRendererAndEditor implements TableCellEditor, 
     private JButton buttonEdit;
     private ResultModel editedRow;
 
-    public JButton getButtonEdit() {
-        return buttonEdit;
-    }
-
     public MesureButtonTableCellRendererAndEditor(SpeedTestCore speedTestCore) {
 
         this.speedTestCore = speedTestCore;
@@ -65,6 +61,10 @@ public class MesureButtonTableCellRendererAndEditor implements TableCellEditor, 
     @Override
     public void cancelCellEditing() {
         editedRow = null;
+    }
+
+    public JButton getButtonEdit() {
+        return buttonEdit;
     }
 
     @Override

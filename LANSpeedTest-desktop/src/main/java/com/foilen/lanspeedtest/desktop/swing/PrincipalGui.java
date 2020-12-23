@@ -30,6 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -105,7 +106,7 @@ public class PrincipalGui extends JFrame {
         speedTestCore.registerEventsHandler(this);
         setTitle("LAN Speed Test");
         setIconImage(ImageIO.read(ResourceTools.getResourceAsStream("icon.png", getClass())));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(100, 100, 677, 518);
         setMinimumSize(new Dimension(1080, 500));
         setResizable(true);
