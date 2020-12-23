@@ -17,11 +17,15 @@
 package com.foilen.lanspeedtest.desktop;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.foilen.lanspeedtest.core.SpeedTestCore;
 import com.foilen.lanspeedtest.desktop.cli.ClientCli;
 import com.foilen.lanspeedtest.desktop.cli.ServerCli;
 import com.foilen.lanspeedtest.desktop.swing.PrincipalGui;
+import com.foilen.smalltools.tools.LogbackTools;
 
 public class App {
 
@@ -29,6 +33,7 @@ public class App {
         System.out.println("Running with no arguments launches a Swing GUI");
         System.out.println("Using --server starts a server that waits for tests in a console");
         System.out.println("Using --client tests all the available servers, displays them in the console");
+        System.out.println("Using --debug to enable more logging");
         System.out.println("Using --help or -h shows this help");
         System.exit(1);
     }
@@ -37,18 +42,28 @@ public class App {
 
         SpeedTestCore speedTestCore = new SpeedTestCore();
 
+        // Check arguments
+        List<String> arguments = new ArrayList<>(Arrays.asList(args));
+
+        boolean isDebug = arguments.remove("--debug");
+        if (isDebug) {
+            LogbackTools.changeConfig("/logback-debug.xml");
+        } else {
+            LogbackTools.changeConfig("/logback-normal.xml");
+        }
+
         // Launch GUI
-        if (args.length == 0) {
+        if (arguments.isEmpty()) {
             new PrincipalGui(speedTestCore).setVisible(true);
             return;
         }
 
-        if (args.length != 1) {
+        if (arguments.size() != 1) {
             displayHelpAndExit();
             return;
         }
 
-        switch (args[0]) {
+        switch (arguments.get(0)) {
         case "--client":
             new ClientCli(speedTestCore).run();
             break;
