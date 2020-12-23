@@ -2,17 +2,13 @@
 
 set -e
 
-# Get the directory path of the current script
 RUN_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
 cd $RUN_PATH
 
-rm -rf apps
-mkdir apps
+echo ----[ Bundle apps ]----
 
-./gradlew clean build assemble
-
+mkdir -p apps
 cp LANSpeedTest-desktop/build/libs/LANSpeedTest-desktop-*-all.jar apps
 
-echo ---[ Applications compiled ]---
+echo ----[ Applications ]----
 find apps

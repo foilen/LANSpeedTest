@@ -3,18 +3,23 @@ LAN Speed Test
 
 Easily check the download/upload speed between your computers on your LAN.
 
-See more details on https://www.foilen.com/fr/lan-speed-test .
+See more details on https://www.foilen.com/fr/logiciels/lan-speed-test .
 
 ----
 
 To compile
 =
 
-./build.sh
+./create-local-release.sh
 
 To execute
 =
 
-java -jar apps/LANSpeedTest-desktop-1.0-all.jar --server
+```
+# For the CLI
+java -jar apps/LANSpeedTest-desktop-*-all.jar --server
+java -jar apps/LANSpeedTest-desktop-*-all.jar --client
 
-java -jar apps/LANSpeedTest-desktop-1.0-all.jar --client
+# For the GUI
+java -jar apps/LANSpeedTest-desktop-*-all.jar
+```
